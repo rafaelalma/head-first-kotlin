@@ -1,7 +1,10 @@
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import javax.sound.sampled.AudioSystem
 
-fun playBeats(beats: String, file: String) {
+suspend fun playBeats(beats: String, file: String) {
     val parts = beats.split("x")
     var count: Int
     for (part in parts) {
@@ -9,7 +12,7 @@ fun playBeats(beats: String, file: String) {
         if (part == "") {
             playSound(file)
         } else {
-            Thread.sleep(100 * (part.length + 1L))
+            delay(100 * (part.length + 1L))
             if (count < beats.length) {
                 playSound(file)
             }
@@ -25,6 +28,10 @@ fun playSound(file: String) {
 }
 
 fun main() {
-    playBeats("x-x-x-x-x-x-", "toms.aiff")
-    playBeats("x-----x-----", "crash_cymbal.aiff")
+    runBlocking {
+        launch { playBeats("x-x-x-x-x-x-", "toms.aiff") }
+        playBeats("x-----x-----", "crash_cymbal.aiff")
+    }
+
+
 }
